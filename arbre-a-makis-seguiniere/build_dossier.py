@@ -540,7 +540,7 @@ def page_incendie(c):
     arrow_path(c, [(200, 575), (-80, 575)], GG, lw=3)
     arrow_path(c, [(1470, 700), (DEPTH + 70, 690)], GG, lw=3)
     arrow_path(c, [(1470, 120), (DEPTH + 70, 65)], GG, lw=2)
-    txt(c, 150, 540, "dégagement principal 2 UP (2,40 m)", 5.5, "FB", GG)
+    txt(c, 150, 540, "dégagement principal 4 UP (2,40 m)", 5.5, "FB", GG)
     for (x, y) in [(15, 420), (15, 730), (1530, 640), (1530, 120), (1100, 500), (800, 400), (600, 1100)]:
         X, Y = P(x, y); c.setFillColor(GG); c.rect(X - 6, Y - 3, 12, 6, fill=1, stroke=0)
     for (x, y, k) in [(60, 700, "E"), (630, 560, "E"), (870, 1030, "F"), (1000, 790, "C"), (1480, 1100, "C"), (1500, 450, "E")]:
