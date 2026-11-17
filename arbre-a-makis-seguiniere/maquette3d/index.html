@@ -43,6 +43,7 @@ const Q = new URLSearchParams(location.search);
 const STILL = Q.get('still') === '1';
 if (STILL) document.body.classList.add('still');
 const VIEW0 = Q.get('view') || 'axo';
+const V4 = Q.get('v4') === '1', RUSH = Q.get('rush') === '1';
 const canvas = document.getElementById('c');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
 const W0 = STILL ? +(Q.get('w') || 2400) : innerWidth, H0 = STILL ? +(Q.get('h') || 1500) : innerHeight;
@@ -290,6 +291,7 @@ mods.forEach((lab, i) => {
 });
 decal(290, 1149, 2.55, 4.6, .4, Math.PI, textTex([{ t: '« Le goût du bon sens. »' }], { w: 1600, h: 140, color: '#13213c' }));
 // îlot « L'Arbre » + arbre
+const ILOT_N0 = scene.children.length, ILOT_H0 = G.high.children.length;
 (function () {
   const s = new THREE.Shape(), x1 = 1.10, y1 = 6.20, x2 = 3.30, y2 = 8.50, r = .35;
   s.moveTo(x1 + r, y1); s.lineTo(x2 - r, y1); s.quadraticCurveTo(x2, y1, x2, y1 + r); s.lineTo(x2, y2 - r); s.quadraticCurveTo(x2, y2, x2 - r, y2);
@@ -335,13 +337,30 @@ decal(290, 1149, 2.55, 4.6, .4, Math.PI, textTex([{ t: '« Le goût du bon sens.
   }
   leaves.forEach((l, i) => { l.count = cnt[i]; l.castShadow = true; G.high.add(l); });
 })();
+// V4 : îlot ramené à 1,90 m de large (x 1,40 → 3,30) pour dégager 1,40 m côté vitrine
+if (V4) [...scene.children.slice(ILOT_N0), ...G.high.children.slice(ILOT_H0)].forEach(o => { const rot = Math.abs(o.rotation.y) > .01; o.position.x = 2.35 + (o.position.x - 2.20) * .864; if (!rot) o.scale.x *= .864; });
 // comptoir caisse (lattes bois, plateau quartz)
 box(472, 430, 545, 900, 0, 1.0, mat.oak); slats(470, 430, 470, 900, .1, .98, 'y', 6, 3.5, -3);
 box(465, 425, 550, 905, 1.0, 1.04, mat.quartz); box(545, 430, 655, 458, 0, .9, mat.oak); box(545, 425, 655, 462, .9, .93, mat.quartz);
-box(472, 470, 500, 560, .78, .8, mat.quartz);
-[515, 640].forEach(y => { box(505, y - 15, 515, y + 15, 1.04, 1.32, mat.black); box(486, y - 6, 498, y + 6, 1.04, 1.1, mat.black); });
-box(480, 790, 540, 895, 1.04, 1.06, mat.steel); box(505, 790, 515, 895, 1.45, 1.5, M({ color: '#2b2b2b', emissive: '#ff6a3d', emissiveIntensity: .6 }));
-[790, 895].forEach(y => cyl(510, y - 3, .01, 1.06, 1.45, mat.steel, 6));
+const CO = V4 ? { pmr: [600, 690], cais: [645, 775], ret: [440, 545] } : { pmr: [470, 560], cais: [515, 640], ret: [790, 895] };
+box(472, CO.pmr[0], 500, CO.pmr[1], .78, .8, mat.quartz);
+CO.cais.forEach(y => { box(505, y - 15, 515, y + 15, 1.04, 1.32, mat.black); box(486, y - 6, 498, y + 6, 1.04, 1.1, mat.black); });
+box(480, CO.ret[0], 540, CO.ret[1], 1.04, 1.06, mat.steel); box(505, CO.ret[0], 515, CO.ret[1], 1.45, 1.5, M({ color: '#2b2b2b', emissive: '#ff6a3d', emissiveIntensity: .6 }));
+CO.ret.forEach(y => cyl(510, y - 3, .01, 1.06, 1.45, mat.steel, 6));
+if (V4) {
+  // enseigne suspendue du retrait, marquage au sol de la file, totem d'entrée de file, station de tri
+  const sg = textTex([{ t: 'RETRAIT', font: '800 120px Inter, sans-serif', color: '#ffffff' }, { t: 'Click & collect · Plats chauds', font: '600 62px Inter, sans-serif', color: '#8cc63f' }], { w: 1100, h: 330, bg: '#13213c' });
+  box(505, 440, 512, 548, 1.95, 2.3, mat.navy); [-1, 1].forEach(sd => decal(505 + sd * 4.2, 494, 2.125, 1.06, .33, -Math.PI / 2 * sd, sg, { emissive: .35 }));
+  [470, 520].forEach(y => cyl(508, y, .004, 2.3, HC, mat.black, 4, { cast: false }));
+  const mk = M({ color: '#8cc63f', roughness: .6 });
+  for (let x = 70; x < 400; x += 45) box(x, 968, x + 26, 976, .002, .006, mk, { cast: false });
+  for (let y = 960; y > 820; y -= 45) box(401, y - 26, 409, y, .002, .006, mk, { cast: false });
+  box(20, 925, 58, 975, 0, .04, mat.black); box(34, 930, 44, 970, .04, 1.55, mat.black);
+  const tt = textTex([{ t: 'ICI, ON SE SERT', font: '800 64px Inter, sans-serif', color: '#ffffff' }, { t: 'en avançant vers les caisses', font: '500 44px Inter, sans-serif', color: '#ffffff' }, { t: 'Envie de chaud ?', font: 'italic 600 70px "Caveat", "Segoe Script", "FreeSerif", serif', color: '#8cc63f' }, { t: 'Baos, gyozas : commandez en caisse', font: '500 40px Inter, sans-serif', color: '#ffffff' }], { w: 700, h: 760, bg: '#13213c' });
+  decal(45.5, 950, 1.25, .5, .55, Math.PI / 2, tt, { emissive: .2 }); decal(32.5, 950, 1.25, .5, .55, -Math.PI / 2, tt, { emissive: .2 });
+  box(0, 355, 55, 445, 0, 1.0, mat.oak); [['#5f6368', 365], ['#f2c14e', 393], ['#7cb342', 421]].forEach(([c2, y]) => box(8, y - 11, 47, y + 11, 1.0, 1.012, M({ color: c2 }), { cast: false }));
+  box(0, 355, 6, 445, 1.0, 1.55, mat.navy);
+}
 // écrans menus + logo au-dessus de la verrière
 const menu = (title, items) => textTex([{ t: title, font: '800 70px Inter, sans-serif', color: '#8cc63f' }].concat(items.map(t => ({ t, font: '500 46px Inter, sans-serif', color: '#ffffff' }))), { w: 900, h: 520, bg: '#101826', color: '#ffffff' });
 [[477, 'SUSHIS & ROLLS', ['Avocado Truite', 'California saumon', 'Maki concombre']], [580, 'BAOS', ['Poulet Cacahuète', 'Poulet Croustillant', 'Veggie teriyaki']], [683, 'BOWLS', ['Poulet Granny', 'Saumon avocat', 'Tofu sésame']]].forEach(([y, t, it]) => {
@@ -350,8 +369,9 @@ const menu = (title, items) => textTex([{ t: title, font: '800 70px Inter, sans-
 });
 (function () { const lt = new THREE.TextureLoader().load('logo_lam.png'); lt.encoding = THREE.sRGBEncoding; box(646, 430, 650, 730, 2.42, 2.78, mat.cream); const p = new THREE.Mesh(new THREE.PlaneGeometry(.95, .34), new THREE.MeshStandardMaterial({ map: lt, transparent: true, roughness: .8 })); p.position.set(6.455, 2.6, 5.8); p.rotation.y = -Math.PI / 2; scene.add(p); })();
 // places : mange-debout, banquettes, tables, chaises
-box(0, 60, 45, 420, 1.06, 1.1, mat.oak); box(38, 60, 45, 420, 0, 1.06, mat.oak);
-for (let i = 0; i < 5; i++) { const y = 60 + 360 * (i + .5) / 5; cyl(75, y, .19, .74, .78, mat.oak, 20); cyl(75, y, .02, 0, .74, mat.black, 8); cyl(75, y, .17, .3, .32, mat.black, 16, { r2: .17 }); }
+const MD = V4 ? [60, 345, 4] : [60, 420, 5];
+box(0, MD[0], 45, MD[1], 1.06, 1.1, mat.oak); box(38, MD[0], 45, MD[1], 0, 1.06, mat.oak);
+for (let i = 0; i < MD[2]; i++) { const y = 60 + 360 * (i + .5) / 5; cyl(75, y, .19, .74, .78, mat.oak, 20); cyl(75, y, .02, 0, .74, mat.black, 8); cyl(75, y, .17, .3, .32, mat.black, 16, { r2: .17 }); }
 function banquette(x1, x2, y1 = 0) { box(x1, y1, x2, y1 + 55, 0, .2, mat.black); box(x1, y1 + 5, x2, y1 + 55, .2, .45, mat.navyFab); box(x1, y1, x2, y1 + 14, .45, 1.0, mat.navyFab); }
 banquette(120, 465); banquette(665, 925);
 slats(120, 2, 465, 2, 1.0, 2.0, 'x', 6, 3.5, 3); slats(665, 2, 925, 2, 1.0, 2.0, 'x', 6, 3.5, 3);
@@ -429,8 +449,16 @@ function figure(x, y, rot, col, sc = 1) {
   [-.2, .2].forEach(o => { const a = new THREE.Mesh(new THREE.CylinderGeometry(.045, .04, .62, 8), m); a.position.set(o, 1.13, .02); g.add(a); });
   g.scale.setScalar(sc); g.position.set(x / 100, 0, y / 100); g.rotation.y = rot; g.traverse(o => o.castShadow = true); scene.add(g);
 }
-figure(300, 975, Math.PI, '#a7b0bd'); figure(415, 560, -Math.PI / 2, '#b9a58f', .97); figure(600, 640, Math.PI / 2, '#13213c');
-figure(170, 520, 2.4, '#c4c9d1', .95); figure(1000, 915, -Math.PI / 2, '#f2f2f2'); figure(860, 600, 0, '#f2f2f2', .98);
+figure(1000, 915, -Math.PI / 2, '#f2f2f2'); figure(860, 600, 0, '#f2f2f2', .98);
+if (!RUSH) { figure(300, 975, Math.PI, '#a7b0bd'); figure(415, 560, -Math.PI / 2, '#b9a58f', .97); figure(600, 640, Math.PI / 2, '#13213c'); figure(170, 520, 2.4, '#c4c9d1', .95); }
+else {
+  const pal = ['#a7b0bd', '#b9a58f', '#c4c9d1', '#8e9bb0', '#c9a98a', '#9fb3a0', '#b7a3b8', '#d0c4ad', '#93a5b8', '#bfa894', '#a9b8c9', '#c2b6a2', '#9aa7a0', '#b0a2a8', '#c7bba8', '#a6b4bd', '#bba48c'];
+  const cust = V4
+    ? [[435, 645], [435, 775], [420, 838], [420, 892], [422, 946], [400, 1000], [340, 1003], [280, 998], [220, 1004], [160, 999], [100, 1004], [432, 490], [385, 470], [230, 540], [120, 560], [560, 330]]
+    : [[435, 515], [435, 640], [378, 522], [322, 516], [266, 526], [210, 519], [154, 524], [98, 520], [385, 665], [388, 720], [425, 820], [380, 862], [440, 880], [130, 1000], [250, 995], [360, 1005], [560, 330]];
+  cust.forEach(([x, y], i) => figure(x, y, (i * 1.7) % 6.28, pal[i % pal.length], .93 + (i % 4) * .03));
+  (V4 ? [[580, 645], [580, 775], [590, 495]] : [[580, 515], [580, 640], [600, 850]]).forEach(([x, y]) => figure(x, y, Math.PI / 2, '#13213c'));
+}
 function ext2(x, y) { cyl(x, y, .07, 0, .55, M({ color: '#c62828', roughness: .4 }), 14); cyl(x, y, .025, .55, .62, mat.black, 8); }
 ext2(1035, 1120); ext2(630, 1120); ext2(1500, 560); ext2(60, 700);
 [[990, 870, '#2e7d32'], [990, 895, '#c62828'], [990, 920, '#1565c0']].forEach(([x, y, c2]) => box(x, y, x + 45, y + 18, .9, .915, M({ color: c2, roughness: .6 }), { cast: false }));
@@ -580,6 +608,8 @@ const VIEWS = {
   labo:     { label: 'Laboratoire — maquette', type: 'ortho', target: [10.9, .6, 6.4], dir: [.5, .82, -.55], size: 6.0, cut: 1.7, ceil: false, hideTop: true, desc: "Le laboratoire coupé à 1,70 m : réserve, chambre froide, vestiaires, plonge, prépa et cuisson." },
   hotline:  { label: 'Cuisson & prépa — maquette', type: 'ortho', target: [8.2, .7, 9.0], dir: [-.4, .84, -.42], size: 2.6, cut: 1.7, ceil: false, desc: "Gros plan sur la prépa froide, les armoires positives et la cuisson." },
   cuisson:  { label: 'Laboratoire — cuisson', type: 'persp', pos: [8.82, 1.7, 8.7], target: [7.35, 1.0, 11.4], fov: 72, cut: 0, ceil: true, desc: "La ligne de cuisson (four mixte + friteuse sous hotte) vue depuis l'ex-zone pousse." },
+  entree:   { label: 'Vue depuis la porte', type: 'persp', pos: [-1.0, 1.62, 6.3], target: [4.7, 1.05, 7.2], fov: 64, cut: 0, ceil: true, desc: "Ce que voit un client qui arrive devant la porte." },
+  vente:    { label: 'Zone de vente — maquette', type: 'ortho', target: [3.1, .6, 7.4], dir: [-.55, .8, -.62], size: 3.7, cut: 1.7, ceil: false, hideTop: true, desc: "La zone de vente coupée à 1,70 m." },
   devanture: { label: 'Devanture — jour', type: 'persp', pos: [-17.5, 1.7, 2.4], target: [0, 4.6, 5.75], fov: 46, cut: 0, ceil: true, ext: true, desc: "La devanture vue depuis l'allée du village : pignon, auvent, enseigne et terrasse." },
   nuit:     { label: 'Devanture — soir', type: 'persp', pos: [-11.8, 1.65, -3.4], target: [0, 3.5, 6.4], fov: 56, cut: 0, ceil: true, ext: true, night: true, desc: "La devanture éclairée en fin de journée : caisson lumineux, lettres rétroéclairées, salle visible à travers la vitrine." },
   elevation: { label: 'Élévation de façade', type: 'ortho', target: [0, 6.1, 5.75], dir: [-1, 0, .0001], size: 6.35, cut: 0, ceil: true, ext: true, garden: false, up: [0, 1, 0], desc: "Élévation de la façade (vue de face, sans perspective)." },
