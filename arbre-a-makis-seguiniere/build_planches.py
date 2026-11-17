@@ -77,7 +77,7 @@ def p_axo(c):
          "Un tronc habillé de lattes de chêne sort de l'îlot central et se déploie en branches lumineuses sous le plafond, d'où retombe un feuillage stabilisé. Il porte le nom de la marque, guide le regard et cache les volumes techniques du plafond.\n"
          "\n"
          "**Ce que l'on voit du laboratoire\n"
-         "Les verrières existantes de la prépa et de la cuisson sont gardées : le client voit les équipes travailler en tenue blanche, dans un espace inox et blanc. C'est la meilleure publicité pour le « frais, préparé ici ».\n"
+         "Les verrières existantes de la prépa et de la cuisson sont gardées : le client voit les équipes travailler en tenue blanche, dans un espace inox et blanc. C'est la meilleure démonstration du « préparé par nos équipes ».\n"
          "\n"
          "**Fidélité au plan\n"
          "Toutes les cloisons, portes et équipements sont à la position du plan V3 ; seules les finitions décoratives sont des intentions.", 8)
@@ -90,8 +90,26 @@ def p_view(c, num, titre, name, cap, text):
     para(c, 915, H - 82, 245, text, 8)
     cart(c, titre.split(" — ", 1)[1].upper(), num)
 
+def p_devanture(c):
+    h1(c, 40, H - 50, "03 — La devanture, de jour et en soirée")
+    w = 560
+    img(c, "devanture", 30, H - 80 - w / 1.6, w)
+    img(c, "nuit", 30 + w + 14, H - 80 - w / 1.6, w)
+    caption(c, 30, H - 92 - w / 1.6, "À gauche : depuis l'allée du village, en journée. À droite : en fin de journée, caisson et lettres rétroéclairés, salle éclairée derrière la vitrine.")
+    para(c, 30, H - 120 - w / 1.6, 560,
+         "**L'enseigne\n"
+         "Le caisson existant de 11,50 m est rhabillé en bleu marine satiné. Au centre, un caisson lumineux blanc porte le logo, cerclé d'un liseré vert. De part et d'autre, des lettres blanches rétroéclairées : « SUSHIS · BOWLS · BAOS » et « SUR PLACE · À EMPORTER », avec en sous-titre « CUISINE JAPONAISE » et « PRÉPARÉS À MAULÉVRIER ». Un liseré LED vert souligne tout le bandeau.\n"
+         "**Mentions\n"
+         "Seulement des informations factuelles et le slogan de la marque : pas de « frais » ni de « responsable ».", 8)
+    para(c, 30 + w + 14, H - 120 - w / 1.6, 560,
+         "**La vitrine\n"
+         "Une frise de branches et de feuilles court sur le vitrage haut et rappelle l'arbre de la salle. Deux panneaux dépolis à hauteur d'yeux : « Le goût du bon sens. » d'un côté, les pictogrammes Sur place / À emporter / Atelier à Maulévrier de l'autre. La salle reste visible, c'est elle qui donne envie d'entrer.\n"
+         "**Le seuil\n"
+         "Deux oliviers en jardinières marine encadrent la porte, un chevalet ardoise accueille, 16 places en terrasse sous l'auvent. En option, une enseigne drapeau ronde lumineuse, à faire valider par le centre.", 8)
+    cart(c, "LA DEVANTURE", 3)
+
 def p_labo2(c):
-    h1(c, 40, H - 50, "07 — Laboratoire : cuisson & préparation")
+    h1(c, 40, H - 50, "08 — Laboratoire : cuisson & préparation")
     w = 560
     img(c, "hotline", 30, H - 80 - w / 1.6, w)
     img(c, "cuisson", 30 + w + 14, H - 80 - w / 1.6, w)
@@ -106,10 +124,10 @@ def p_labo2(c):
          "La pièce vitrée existante garde sa saladette 3 portes et son armoire positive. Elle sert à assembler, étiqueter et préparer le réassort, qui part directement vers la zone de service par le passage froid (ex-niche).\n"
          "**Lisibilité depuis la salle\n"
          "Les verrières laissent voir la prépa et la cuisson derrière les écrans menus. Gardez-les propres et bien éclairées : c'est une vitrine.", 8)
-    cart(c, "LABORATOIRE — CUISSON & PRÉPA", 7)
+    cart(c, "LABORATOIRE — CUISSON & PRÉPA", 8)
 
 def p_palette(c):
-    h1(c, 40, H - 50, "08 — Palette des matériaux, mobilier et lumière")
+    h1(c, 40, H - 50, "09 — Palette des matériaux, mobilier et lumière")
     sw = [("#13213C", "Bleu marine L'Arbre à Makis", "Banquettes, bandeaux de la murale, enseigne, cadres"),
           ("#D8B98A", "Chêne clair", "Lattes du comptoir et de l'arbre, îlot, plateaux de tables, mange-debout (panneaux classés M1)"),
           ("#F2EFE9", "Quartz blanc", "Plans du comptoir, de l'îlot et de la desserte"),
@@ -135,10 +153,10 @@ def p_palette(c):
             ("Murale", "4 modules à portes vitrées, intérieur blanc LED 4000 K, bandeaux marine lettrés SUSHIS / ROLLS & BOWLS / BAOS / DESSERTS"),
             ("Lumière salle", "Suspensions globes opalins 2700 K au-dessus des tables, spots encastrés, LED linéaire dans les branches de l'arbre"),
             ("Lumière laboratoire", "Dalles LED étanches 4000 K, luminaires protégés au-dessus des postes"),
-            ("Graphisme", "Citations manuscrites au mur (« Des produits frais, préparés à Maulévrier. », « Une pause gourmande qui a du sens. », « Le goût du bon sens. »), bandes vitrophanie PMR marine")]
+            ("Graphisme", "Citations manuscrites au mur (« Préparés dans notre atelier de Maulévrier. », « Une pause gourmande qui a du sens. », « Le goût du bon sens. »), frise de branches et bandes PMR en vitrophanie ; aucune mention « frais » ni « responsable »")]
     table(c, 40, yy, [("Poste", 150), ("Intention", 930)], rows, 7.8)
     para(c, 40, 100, 1080, "Rappels : tout le décor (bois, végétal, textiles) doit être classé au feu M1 / B-s3,d0 (ERP) ; côté laboratoire, uniquement des matériaux lisses et lessivables (audit DDPP).", 7.6, col=GREY)
-    cart(c, "PALETTE MATÉRIAUX & MOBILIER", 8)
+    cart(c, "PALETTE MATÉRIAUX & MOBILIER", 9)
 
 def main():
     c = canvas.Canvas(OUT, pagesize=(W, H))
@@ -146,22 +164,23 @@ def main():
     p_cover(c); c.showPage()
     p_plan(c); c.showPage()
     p_axo(c); c.showPage()
-    p_view(c, 3, "03 — Salle : l'arrivée", "salle", "Vue depuis le coin mange-debout, à hauteur d'œil (1,60 m) : tables, comptoir, arbre et murale au fond.",
+    p_devanture(c); c.showPage()
+    p_view(c, 4, "04 — Salle : l'arrivée", "salle", "Vue depuis le coin mange-debout, à hauteur d'œil (1,60 m) : tables, comptoir, arbre et murale au fond.",
            "**Première impression\nDepuis la vitrine, on voit l'arbre et la murale éclairée dès le seuil : le client sait tout de suite où se servir.\n\n"
            "**Le comptoir\nUne façade en lattes de chêne, un plan quartz blanc et deux caisses. Au-dessus, trois écrans menus (Sushis & Rolls, Baos, Bowls) et le logo, posés sur la verrière de la prépa, qui reste visible.\n\n"
            "**Les tables\nPlateaux chêne et chaises noires, suspensions globes en lumière chaude : l'ambiance d'un café plus que d'un fast-food.")
     c.showPage()
-    p_view(c, 4, "04 — Salle : l'îlot et la murale", "murale", "Vue depuis la salle vers le mur des frigos : l'îlot « L'Arbre » au centre, la caisse à gauche, la vitrine à droite.",
+    p_view(c, 5, "05 — Salle : l'îlot et la murale", "murale", "Vue depuis la salle vers le mur des frigos : l'îlot « L'Arbre » au centre, la caisse à gauche, la vitrine à droite.",
            "**L'îlot « L'Arbre »\nDeux gradins en chêne arrondis : la couronne basse présente le retail (sauces, chips d'algues, cacahuètes wasabi, thés), le gradin haut les produits phares. Bandeau marine « NOS INCONTOURNABLES » côté entrée.\n\n"
            "**La murale\nQuatre modules noirs à portes vitrées, intérieur blanc très éclairé : les couleurs des sushis, rolls et bowls ressortent. Un bandeau marine lettré par famille, et la citation « Le goût du bon sens. » au-dessus.\n\n"
            "**La circulation\nAu moins 1,40 m autour de l'îlot et 2,15 m devant la murale : on se sert sans gêner la file de la caisse.")
     c.showPage()
-    p_view(c, 5, "05 — Salle : l'espace détente", "detente", "Vue depuis le fond de l'alcôve vers la façade : banquette, tables, lattes de bois et lumière du jour.",
+    p_view(c, 6, "06 — Salle : l'espace détente", "detente", "Vue depuis le fond de l'alcôve vers la façade : banquette, tables, lattes de bois et lumière du jour.",
            "**Une pause au calme\nL'alcôve du fond reprend la banquette existante, retapissée en marine, avec un habillage de lattes de chêne et la citation « Une pause gourmande qui a du sens. ».\n\n"
            "**La lumière\nLa grande façade vitrée sous l'auvent éclaire toute la salle. Les suspensions globes donnent une lumière chaude et basse au-dessus de chaque table.\n\n"
            "**La desserte\nUn meuble en chêne pour déposer les plateaux, adossé à la passe de la plonge : la vaisselle sale ne retraverse jamais la salle.")
     c.showPage()
-    p_view(c, 6, "06 — Laboratoire : maquette d'ensemble", "labo", "Maquette coupée à 1,70 m, vue depuis le fond de cellule : réserve, chambre froide, vestiaires, plonge, prépa, cuisson.",
+    p_view(c, 7, "07 — Laboratoire : maquette d'ensemble", "labo", "Maquette coupée à 1,70 m, vue depuis le fond de cellule : réserve, chambre froide, vestiaires, plonge, prépa, cuisson.",
            "**Un laboratoire dans les murs existants\nAucune cloison n'est déplacée. On retrouve la réserve coupe-feu (étagères retail), la chambre froide négative (surgelés), le bloc vestiaires / WC, la plonge, la prépa froide vitrée et la zone de cuisson.\n\n"
            "**Le couloir arrière\nRéception des livraisons à la porte P1, armoire à produits d'entretien, conteneurs à couvercle près de la porte P2.\n\n"
            "**Hygiène\nMurs blancs lisses, sol grès gris, inox : tout se lave à grande eau, conformément à l'audit DDPP.")

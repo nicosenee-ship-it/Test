@@ -166,7 +166,7 @@ def p_bordereau(c):
             ("08", "Notice d'accessibilité (ERP existant)", "Jointe — à signer"),
             ("09", "Plan de l'état projeté — accessibilité, coté", "Joint — A3"),
             ("10", "Notice descriptive des travaux et des matériaux", "Jointe"),
-            ("11", "Façades état actuel / état projeté (enseigne)", "Jointe — A3"),
+            ("11", "Façades état actuel / projeté et vue d\'insertion", "Jointe — A3 (2 pages)"),
             ("12", "Photographies de l'état actuel", "À compléter (cadres prévus)"),
             ("13", "Accord du bailleur / de la direction du centre", "À joindre")]
     yy = table(c, 50, y, [("Pièce", 50), ("Intitulé", 285), ("État", 160)], rows, 8.6)
@@ -233,7 +233,7 @@ def notice_securite(c):
     y = field_rows(c, 50, y, [
         ("Établissement", "L'Arbre à Makis — cellule n°09, Espace commercial Marques Avenue, rue du Bocage, 49280 La Séguinière"),
         ("Exploitant", BLANK),
-        ("Activité", "Restauration rapide : vente à emporter de produits frais préparés par le laboratoire de l'exploitant, cuisson minute de quelques produits chauds, consommation sur place, vente de produits d'épicerie préemballés."),
+        ("Activité", "Restauration rapide : vente à emporter de produits préparés par le laboratoire de l'exploitant, cuisson minute de quelques produits chauds, consommation sur place, vente de produits d'épicerie préemballés."),
         ("Situation", "Cellule en rez-de-chaussée d'un bâtiment de l'espace commercial, ouverte sur l'allée piétonne par sa façade vitrée (sous auvent) et sur le couloir de service par deux portes à l'arrière. Cellules voisines mitoyennes de part et d'autre."),
         ("Surface", "≈ 178 m² intérieurs, dont ≈ 81 m² accessibles au public, + terrasse sous auvent."),
         ("Nature des travaux", "Aménagement intérieur sans modification de la structure, de la façade ni des parois coupe-feu (détail en pièce 10)."),
@@ -330,7 +330,7 @@ def notice_travaux(c):
      ("Revêtements", "Crédence inox derrière les appareils de cuisson ; reprises ponctuelles de joints et de plinthes ; peinture lessivable en salle.", "Inox A1 ; peinture M1"),
      ("Agencement", "Comptoir caisse, îlot central de présentation (« arbre » décoratif en lattes de bois et végétal stabilisé), banquettes, tables, chaises, mange-debout, desserte.", "Bois ignifugé M1 / B-s3,d0 ; végétal M1"),
      ("Froid et cuisson", "Frigos libre-service à portes vitrées (groupe intégré), armoires réfrigérées, four mixte et friteuse électriques (≈ 19 kW au total), plan réfrigéré.", "Matériel posé"),
-     ("Enseigne", "Remplacement des faces et des lettres sur le caisson d'enseigne existant (11,50 × 1,48 m) ; vitrophanie partielle.", "Voir pièce 11"),
+     ("Enseigne", "Nouvelles faces sur le caisson d'enseigne existant (11,50 × 1,48 m) : fond marine, caisson lumineux central avec logo, lettres rétroéclairées, liseré LED vert ; vitrophanie (frise, panneaux dépolis, bandes contrastées).", "Voir pièce 11"),
     ]
     yy = table(c, 50, y - 8, [("Lot", 95), ("Travaux", 290), ("Matériaux / classement", 110)], rows, 7.9)
     para(c, 50, yy - 18, 495, "Les procès-verbaux de réaction au feu des habillages et éléments décoratifs seront tenus à la disposition de la commission de sécurité.", 8.2, col=GRY)
@@ -527,45 +527,44 @@ def coupe(c):
 
 def facades(c):
     a3(c)
-    s = 0.27  # pt par cm
-    def elev(ox, oy, projete):
-        def F(x, y): return ox + x * s, oy + y * s
-        Wd = 1150; h_eg = 605; h_f = 1175
-        c.saveState(); c.setFillColor(HexColor("#2b2f36")); p = c.beginPath()
-        p.moveTo(*F(-40, h_eg)); p.lineTo(*F(Wd / 2, h_f)); p.lineTo(*F(Wd + 40, h_eg)); p.close(); c.drawPath(p, fill=1, stroke=0)
-        c.setFillColor(HexColor("#c9ccd1"))
-        for xx in (-40, Wd): X, Y = F(xx, 0); c.rect(X, Y, 40 * s, h_eg * s, fill=1, stroke=0)
-        X, Y = F(0, 478); c.setFillColor(NAVY if projete else HexColor("#6f747c")); c.rect(X, Y, Wd * s, 148 * s, fill=1, stroke=0)
-        if projete:
-            c.setFillColor(white); bx, by = F(Wd / 2 - 75, 484); c.roundRect(bx, by, 150 * s, 136 * s, 3, fill=1, stroke=0)
-            c.drawImage(bd.LOGO, bx + 2, by + 2, 150 * s - 4, 136 * s - 4, preserveAspectRatio=True, mask="auto")
-            c.setFont("FB", 5.6); X, Y = F(30, 540); c.drawString(X, Y, "SUSHIS · BOWLS · BAOS")
-            X, Y = F(Wd - 30, 540); c.drawRightString(X, Y, "FRAIS · RESPONSABLE")
-        else:
-            c.setFillColor(white); c.setFont("FI", 7); X, Y = F(Wd / 2, 545); c.drawCentredString(X, Y, "caisson d'enseigne existant (faces de l'ancien exploitant déposées)")
-        c.setFillColor(HexColor("#cfe3ef")); X, Y = F(0, 0); c.rect(X, Y, Wd * s, 478 * s, fill=1, stroke=0)
-        c.setStrokeColor(HexColor("#5a6b78")); c.setLineWidth(0.7)
-        for xx in (Wd * .2, Wd * .4, Wd * .6, Wd * .8): c.line(*F(xx, 0), *F(xx, 478))
-        c.setFillColor(HexColor("#b5d3e6")); X, Y = F(455, 0); c.rect(X, Y, 240 * s, 300 * s, fill=1, stroke=1)
-        c.line(*F(575, 0), *F(575, 300))
-        if projete:
-            c.setStrokeColor(NAVY); c.setLineWidth(1.6)
-            for hh in (110, 160): c.line(*F(0, hh), *F(Wd, hh))
-        c.setFillColor(INK); c.setFont("F", 6.5)
-        for (z, lab) in [(0, "±0,00"), (478, "+4,78"), (626, "+6,26"), (h_eg, ""), (h_f, "+11,75")]:
-            if lab: X, Y = F(Wd + 60, z); c.drawString(X, Y - 2, lab)
-        c.restoreState()
-        X, Y = F(Wd / 2, -60); c.setFont("FB", 10); c.setFillColor(INK); c.drawCentredString(X, Y, "ÉTAT PROJETÉ" if projete else "ÉTAT ACTUEL")
-    elev(80, 260, False); elev(560, 260, True)
-    c.setFont("FB", 12); c.setFillColor(INK); c.drawString(40, A3H - 40, "Façade sur l'allée du village — état actuel / état projeté")
+    R = os.path.join(HERE, "maquette3d", "rendus")
+    iw = 545; ih = iw / 1.6; iy = A3H - 85 - ih
+    def pt(ix, Z, Y): return ix + (Z - (5.75 - 10.16)) / 20.32 * iw, iy + (Y + 0.25) / 12.7 * ih
+    def lbl(X, Y, t, size=6.5, align="l"):
+        c.setFont("FB", size); w = pdfmetrics.stringWidth(t, "FB", size) + 6
+        x0 = X if align == "l" else X - w / 2
+        c.setFillColor(white); c.rect(x0, Y - 3, w, size + 5, fill=1, stroke=0); c.setFillColor(INK); c.drawString(x0 + 3, Y, t)
+    for k, (img, titre) in enumerate([("elevation_actuel", "ÉTAT ACTUEL"), ("elevation_sansdrapeau", "ÉTAT PROJETÉ")]):
+        ix = 40 + k * (iw + 25)
+        c.drawImage(os.path.join(R, img + ".jpg"), ix, iy, iw, ih)
+        c.setStrokeColor(HexColor("#c9ccd1")); c.setLineWidth(.5); c.rect(ix, iy, iw, ih)
+        c.setStrokeColor(INK); c.setLineWidth(.6)
+        for Y, t in [(0, "±0,00"), (4.78, "+4,78"), (6.26, "+6,26"), (11.75, "+11,75")]:
+            X, Yp = pt(ix, 12.0, Y); c.line(X - 4, Yp, X + 18, Yp); lbl(X + 20, Yp - 3, t)
+        Xa, Ya = pt(ix, 0, 7.1); Xb, _ = pt(ix, 11.5, 7.1); c.line(Xa, Ya, Xb, Ya); c.line(Xa, Ya - 4, Xa, Ya + 4); c.line(Xb, Ya - 4, Xb, Ya + 4)
+        lbl((Xa + Xb) / 2, Ya + 3, "caisson d'enseigne existant 11,50 × 1,48 m", 6, "c")
+        Xa, Ya = pt(ix, 4.55, -0.05); Xb, _ = pt(ix, 6.95, -0.05)
+        c.setFont("FB", 10.5); c.setFillColor(INK); c.drawCentredString(ix + iw / 2, iy - 18, titre)
+    para(c, 40, iy - 45, 545,
+         "**État actuel\nCellule libérée par l'ancien exploitant : caisson d'enseigne existant sans faces, vitrine et porte d'origine, pignon en bardage métallique sombre et auvent du centre, inchangés.", 8)
+    para(c, 610, iy - 45, 545,
+         "**État projeté — seules les faces de l'enseigne et la vitrophanie changent\n"
+         "• Caisson existant habillé en bleu marine satiné ; au centre, caisson lumineux blanc (≈ 3,20 × 1,30 m) portant le logo, cerclé d'un liseré vert.\n"
+         "• Lettres blanches rétroéclairées : « SUSHIS · BOWLS · BAOS » et « CUISINE JAPONAISE » à gauche, « SUR PLACE · À EMPORTER » et « PRÉPARÉS À MAULÉVRIER » à droite ; liseré LED vert sous le bandeau.\n"
+         "• Vitrophanie : frise de branches sur le vitrage haut, deux panneaux dépolis à hauteur d'yeux, bandes contrastées à 1,10 et 1,60 m, « Bienvenue » sur la porte.\n"
+         "• Aucune modification de la façade, des menuiseries, du pignon ni de l'auvent. Enseigne lumineuse éteinte entre 1 h et 6 h en dehors des heures d'ouverture ; coupure d'urgence conservée.\n"
+         "• Si un règlement local de publicité s'applique, cette pièce est jointe à la demande d'autorisation d'enseigne (Cerfa 14798*01).", 7.8)
+    cart_a3(c, "11", "FAÇADES — ÉTAT ACTUEL / PROJETÉ", "≈ 1/90", note="Élévations rendues d'après la maquette 3D du projet — cotes de niveau issues des plans 2015")
+    c.showPage()
+    a3(c)
+    w = 900; h = w / 1.6
+    c.drawImage(os.path.join(R, "devanture_sansdrapeau.jpg"), 40, A3H - 70 - h, w, h)
+    c.setFont("FB", 12); c.setFillColor(INK); c.drawString(40, A3H - 45, "Vue d'insertion — la devanture depuis l'allée du village (état projeté)")
     para(c, 960, A3H - 80, 200,
-         "**Modifications\n"
-         "• Aucune modification de la façade, des menuiseries ni des volumes.\n"
-         "• Enseigne : nouvelles faces et lettres sur le caisson existant (11,50 × 1,48 m) ; fond bleu marine, logo L'Arbre à Makis rétroéclairé au centre, lettres blanches de part et d'autre.\n"
-         "• Vitrine : bandes contrastées à 1,10 m et 1,60 m (accessibilité), vitrophanie partielle, horaires sur la porte.\n"
-         "• Coupure d'urgence de l'enseigne lumineuse conservée.\n\n"
-         "**Enseigne\nSi la commune ou l'agglomération dispose d'un règlement local de publicité, cette pièce est aussi jointe à la demande d'autorisation d'enseigne (Cerfa 14798*01).", 7.8)
-    cart_a3(c, "11", "FAÇADES — ÉTAT ACTUEL / PROJETÉ", "1/100 env.")
+         "**Lecture\nVue à hauteur d'œil depuis l'allée piétonne, en journée, issue de la maquette 3D du projet.\n\n"
+         "**Ce qui change\nFaces de l'enseigne, vitrophanie, mobilier de terrasse sous l'auvent (16 places), deux oliviers en jardinières mobiles de part et d'autre de l'entrée.\n\n"
+         "**Ce qui ne change pas\nPignon, auvent et poteaux du centre, façade vitrée et porte, cellules voisines.", 8)
+    cart_a3(c, "11", "VUE D'INSERTION", "—", note="Image de principe issue de la maquette 3D du projet")
 
 def main():
     c = canvas.Canvas(OUT, pagesize=A4)

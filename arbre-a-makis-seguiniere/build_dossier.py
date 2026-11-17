@@ -459,65 +459,29 @@ def legend_box(c, X, Y, items, title):
 
 
 def page_facade(c):
-    h1(c, 40, H - 50, "10 — Façade et enseigne (caisson existant réhabillé)")
-    s = 0.85; ox, oy = 110, 120
-    def F(x, y): return ox + x * s, oy + y * s
-    # bâtiment : largeur 1150 + poteaux ; égout +6.05 ; faîtage +11.75 (cm*0.1 -> on garde cm/ ratio)
-    k = 0.6  # cm -> unités
-    Wd = 1150 * k; h_eg = 605 * k; h_f = 1175 * k
-    c.saveState()
-    c.setFillColor(HexColor("#2b2f36")); p = c.beginPath()
-    x0, y0 = F(0, 0)
-    p.moveTo(*F(-40, h_eg)); p.lineTo(*F(Wd / 2, h_f)); p.lineTo(*F(Wd + 40, h_eg)); p.close(); c.drawPath(p, fill=1, stroke=0)
-    c.setStrokeColor(HexColor("#4a505a")); c.setLineWidth(0.6)
-    for i in range(1, 40):
-        xx = -40 + i * (Wd + 80) / 40
-        top = h_eg + (h_f - h_eg) * (1 - abs(xx - Wd / 2) / (Wd / 2 + 40))
-        c.line(*F(xx, h_eg), *F(xx, top))
-    c.setFillColor(HexColor("#c9ccd1"))
-    for xx in (-40, Wd):
-        X, Y = F(xx, 0); c.rect(X, Y, 40 * k * s, h_eg * s, fill=1, stroke=0)
-    # bandeau enseigne
-    c.setFillColor(NAVY); X, Y = F(0, 478 * k); c.rect(X, Y, Wd * s, 148 * k * s, fill=1, stroke=0)
-    c.setFillColor(white); bx, by = F(Wd / 2 - 75, 478 * k + 6); c.roundRect(bx, by, 150 * s, (148 * k - 12) * s, 4, fill=1, stroke=0)
-    c.drawImage(LOGO, bx + 3, by + 2, 150 * s - 6, (148 * k - 12) * s - 4, preserveAspectRatio=True, mask="auto")
-    c.setFont("FB", 9); c.setFillColor(white)
-    X, Y = F(30, 478 * k + 52); c.drawString(X, Y, "SUSHIS · BOWLS · BAOS")
-    X, Y = F(30, 478 * k + 26); c.setFont("F", 7); c.drawString(X, Y, "PRÊT À MANGER — SUR PLACE OU À EMPORTER")
-    X, Y = F(Wd - 30, 478 * k + 52); c.setFont("FB", 9); c.drawRightString(X, Y, "FRAIS · GOURMAND · RESPONSABLE")
-    X, Y = F(Wd - 30, 478 * k + 26); c.setFont("F", 7); c.drawRightString(X, Y, "Préparé à Maulévrier")
-    # vitrage
-    c.setFillColor(HexColor("#cfe3ef")); X, Y = F(0, 0); c.rect(X, Y, Wd * s, 478 * k * s, fill=1, stroke=0)
-    c.setStrokeColor(HexColor("#5a6b78")); c.setLineWidth(1)
-    for xx in (Wd * 0.2, Wd * 0.4, Wd * 0.6, Wd * 0.8): c.line(*F(xx, 0), *F(xx, 478 * k))
-    dx1, dx2 = Wd / 2 - 120 * k, Wd / 2 + 120 * k
-    c.setFillColor(HexColor("#b5d3e6")); X, Y = F(dx1, 0); c.rect(X, Y, (dx2 - dx1) * s, 300 * k * s, fill=1, stroke=1)
-    c.line(*F(Wd / 2, 0), *F(Wd / 2, 300 * k)); c.line(*F(dx1, 300 * k), *F(dx2, 300 * k))
-    # bandes contrastées
-    c.setStrokeColor(NAVY); c.setLineWidth(2.2)
-    for hh in (110, 160): c.line(*F(0, hh * k), *F(Wd, hh * k))
-    c.setFillColor(GREEN); c.setFont("FB", 6)
-    # vitrophanie gauche (texte)
-    c.setFillColor(NAVY); X, Y = F(30, 330 * k); c.setFont("FB", 11); c.drawString(X, Y, "Le goût du bon sens.")
-    X, Y = F(Wd - 30, 330 * k); c.setFont("F", 8); c.drawRightString(X, Y, "Sushis · Bowls · Baos · Retail japonais")
-    c.setFillColor(GREY); c.setFont("F", 7); X, Y = F(-40, -14); c.drawString(X, Y, "±0,00")
-    X, Y = F(Wd / 2, h_f + 8); c.drawCentredString(X, Y, "+11,75"); X, Y = F(Wd + 45, h_eg); c.drawString(X, Y, "+6,05")
-    c.restoreState()
-    para(c, 880, H - 90, 280,
+    h1(c, 40, H - 50, "10 — Devanture et enseigne")
+    R = os.path.join(HERE, "maquette3d", "rendus")
+    w1 = 720; h1_ = w1 / 1.6
+    c.drawImage(os.path.join(R, "devanture.jpg"), 40, H - 75 - h1_, w1, h1_)
+    w2 = 380; h2_ = w2 / 1.6
+    c.drawImage(os.path.join(R, "nuit.jpg"), 780, H - 75 - h2_, w2, h2_)
+    c.drawImage(os.path.join(R, "elevation.jpg"), 780, H - 85 - 2 * h2_, w2, h2_)
+    c.setFillColor(GREY); c.setFont("FI", 6.8)
+    c.drawString(40, H - 86 - h1_, "Vue depuis l'allée du village, à hauteur d'œil (maquette 3D, plan V3).")
+    c.drawString(780, H - 82 - h2_ - 4, "En fin de journée : caisson et lettres rétroéclairés.")
+    para(c, 40, H - 105 - h1_, 720,
          "**Principe\n"
-         "• Caisson d'enseigne existant conservé (bandeau 11,50 × 1,48 m, structure et alimentation) : seules les faces et les lettres changent.\n"
-         "• Fond bleu marine, logo L'Arbre à Makis rétroéclairé sur caisson blanc au centre, lettres découpées blanches à gauche et à droite (bloc de messages repris de la perspective d'ambiance).\n"
-         "• Vitrine : vitrophanie partielle qui laisse voir l'îlot et les vitrines, bandes contrastées à 1,10 m et 1,60 m (accessibilité), horaires et allergènes/QR code sur la porte.\n"
-         "• Coupure d'urgence de l'enseigne lumineuse conservée.\n"
-         "\n"
+         "On garde le caisson d'enseigne existant (11,50 × 1,48 m) et la façade telle quelle ; seules les faces changent. Fond bleu marine satiné, caisson lumineux blanc au centre avec le logo, cerclé d'un liseré vert, lettres blanches rétroéclairées de part et d'autre : « SUSHIS · BOWLS · BAOS » / « CUISINE JAPONAISE » à gauche, « SUR PLACE · À EMPORTER » / « PRÉPARÉS À MAULÉVRIER » à droite. Un fin liseré LED vert souligne le bandeau.\n"
+         "**Vitrine\n"
+         "Frise de branches et de feuilles sur le vitrage haut (rappel de l'arbre intérieur), deux panneaux dépolis à hauteur d'yeux (« Le goût du bon sens. » et les pictogrammes Sur place / À emporter / Atelier à Maulévrier), bandes contrastées PMR à 1,10 et 1,60 m, « Bienvenue » sur la porte.\n"
+         "**Seuil\n"
+         "Deux oliviers en jardinières marine encadrent l'entrée, un chevalet ardoise, la terrasse de 16 places sous l'auvent. En option : une enseigne drapeau lumineuse ronde (Ø 0,90 m) visible depuis l'allée, à faire accepter par le centre.", 7.8)
+    para(c, 780, H - 100 - 2 * h2_, 380,
+         "**Mentions retenues\n"
+         "Uniquement des mentions factuelles (familles de produits, sur place / à emporter, lieu de préparation) et le slogan de la marque. Les mentions « frais » et « responsable » sont écartées.\n"
          "**Autorisations\n"
-         "• Validation par le bailleur / la direction du centre (charte enseignes Marques Avenue) avant toute fabrication.\n"
-         "• Demande d'autorisation d'enseigne en mairie si la commune ou l'Agglomération du Choletais a un règlement local de publicité : à vérifier en mairie de La Séguinière.\n"
-         "\n"
-         "**Vue d'insertion\n"
-         "À produire par l'enseigniste à partir de la photo 1 du DAT 2015 (même point de vue) pour le dossier mairie / centre.", 8)
-    cartouche(c, "FAÇADE ET ENSEIGNE", phase="ESQUISSE V3", ech="≈ 1/55", num=10)
-
+         "Validation par le centre Marques Avenue avant fabrication ; autorisation d'enseigne en mairie si un règlement local de publicité s'applique (dossier mairie, pièce 11).", 7.6)
+    cartouche(c, "DEVANTURE ET ENSEIGNE", phase="ESQUISSE V3", ech="—", num=10)
 
 def label_min(c, items):
     for (x, y, s) in items: txt(c, x, y, s, 6, "FB", HexColor("#333333"))
