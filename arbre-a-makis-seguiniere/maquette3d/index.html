@@ -3,31 +3,35 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Maquette 3D L'Arbre à Makis</title>
+<title>Maquette 3D Séguinière</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <style>
-  :root { --bg:#f4f1ea; --ink:#13213c; --muted:#5b6475; --panel:#ffffffee; --line:#d9d3c7; --accent:#8cc63f; --btn:#13213c; --btnInk:#fff; }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#0f1626; --ink:#eef2f8; --muted:#a8b2c4; --panel:#162036ee; --line:#2a3550; --btn:#8cc63f; --btnInk:#0f1626; } }
-  :root[data-theme="dark"] { --bg:#0f1626; --ink:#eef2f8; --muted:#a8b2c4; --panel:#162036ee; --line:#2a3550; --btn:#8cc63f; --btnInk:#0f1626; }
-  html, body { margin:0; height:100%; background:var(--bg); color:var(--ink); font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif; overflow:hidden; }
+  /* Plein écran : la maquette occupe tout, l'interface flotte en haut à gauche. */
+  :root { --bg:#e8ebee; --ink:#13213c; --muted:#4f5a6c; --panel:rgba(255,255,255,.92); --line:#cfd6de; --accent:#8cc63f; --btn:#13213c; --btnInk:#ffffff; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#0f1626; --ink:#eef2f8; --muted:#a8b2c4; --panel:rgba(22,32,54,.92); --line:#2a3550; --btn:#8cc63f; --btnInk:#0f1626; color-scheme: dark; } }
+  :root[data-theme="dark"] { --bg:#0f1626; --ink:#eef2f8; --muted:#a8b2c4; --panel:rgba(22,32,54,.92); --line:#2a3550; --btn:#8cc63f; --btnInk:#0f1626; color-scheme: dark; }
+  html, body { height:100%; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif; overflow:hidden; }
   #c { position:fixed; inset:0; width:100%; height:100%; display:block; touch-action:none; }
-  #ui { position:fixed; left:16px; right:16px; top:16px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; pointer-events:none; }
-  #ui > * { pointer-events:auto; }
-  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:10px 12px; backdrop-filter: blur(6px); }
-  h1 { font-size:15px; margin:0 0 2px; letter-spacing:.2px; }
-  .sub { font-size:12px; color:var(--muted); margin:0; }
+  #ui { position:fixed; top:calc(12px + env(safe-area-inset-top, 0px)); left:max(16px, env(safe-area-inset-left, 0px)); right:max(16px, env(safe-area-inset-right, 0px)); display:flex; flex-direction:column; align-items:flex-start; gap:8px; pointer-events:none; }
+  #ui > * { pointer-events:auto; max-width:100%; min-width:0; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:10px 12px; }
+  h1 { font-size:15px; margin:0 0 2px; letter-spacing:.2px; text-wrap:balance; }
+  .sub { font-size:12.5px; color:var(--muted); margin:0; max-width:62ch; }
   .views { display:flex; flex-wrap:wrap; gap:6px; }
-  button { font:inherit; font-size:12.5px; border:1px solid var(--line); background:var(--panel); color:var(--ink); padding:7px 10px; border-radius:999px; cursor:pointer; }
+  button { font:inherit; font-size:12.5px; border:1px solid var(--line); background:var(--panel); color:var(--ink); padding:7px 11px; border-radius:6px; cursor:pointer; }
+  button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
   button.on { background:var(--btn); color:var(--btnInk); border-color:var(--btn); }
-  #hint { position:fixed; left:16px; bottom:16px; font-size:12px; color:var(--muted); }
+  #hint { position:fixed; left:max(16px, env(safe-area-inset-left, 0px)); bottom:calc(12px + env(safe-area-inset-bottom, 0px)); font-size:12px; color:var(--muted); background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:5px 8px; }
   body.still #ui, body.still #hint { display:none; }
-  @media (max-width: 640px) { .card { padding:8px 10px; } h1 { font-size:14px; } button { font-size:12px; padding:6px 9px; } }
+  @media (max-width: 640px) { .card { padding:8px 10px; } h1 { font-size:14px; } .views { flex-wrap:nowrap; overflow-x:auto; width:100%; box-sizing:border-box; } button { font-size:12px; padding:6px 9px; white-space:nowrap; flex:0 0 auto; } #hint { display:none; } }
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
 <div id="ui">
-  <div class="card"><h1>L'Arbre à Makis — cellule 09, La Séguinière</h1><p class="sub">Maquette d'intention (plan V3) — salle + laboratoire</p></div>
-  <div class="card views" id="views"></div>
+  <div class="card"><h1>L'Arbre à Makis, cellule 09 à La Séguinière</h1><p class="sub" id="cap">Maquette d'intention construite sur le plan V3 : salle et laboratoire.</p></div>
+  <div class="card views" id="views" role="group" aria-label="Choisir une vue"></div>
 </div>
 <div id="hint">Glisser pour tourner · molette / pincer pour zoomer · clic droit pour déplacer</div>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
@@ -42,7 +46,7 @@ const VIEW0 = Q.get('view') || 'axo';
 const canvas = document.getElementById('c');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
 const W0 = STILL ? +(Q.get('w') || 2400) : innerWidth, H0 = STILL ? +(Q.get('h') || 1500) : innerHeight;
-renderer.setPixelRatio(STILL ? 1 : Math.min(devicePixelRatio, 2));
+renderer.setPixelRatio(STILL ? 1 : Math.min(devicePixelRatio, 1.5));
 renderer.setSize(W0, H0, !STILL);
 renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -407,7 +411,7 @@ box(1400, 1080, 1440, 1145, 0, 1.9, mat.grey);
 // éclairage
 const hemi = new THREE.HemisphereLight('#fff6e6', '#b9a68a', .28); scene.add(hemi);
 const sun = new THREE.DirectionalLight('#fff1dc', 1.25); sun.position.set(-9, 13, 3.5); sun.target.position.set(6, 0, 6);
-sun.castShadow = true; sun.shadow.mapSize.set(4096, 4096); sun.shadow.bias = -.0004; sun.shadow.normalBias = .02;
+sun.castShadow = true; sun.shadow.mapSize.set(STILL ? 4096 : 2048, STILL ? 4096 : 2048); sun.shadow.bias = -.0004; sun.shadow.normalBias = .02;
 Object.assign(sun.shadow.camera, { left: -14, right: 14, top: 14, bottom: -14, near: 1, far: 50 }); scene.add(sun); scene.add(sun.target);
 const warm = []; [[220, 735, 2.4, 1.2], [300, 190, 2.3, .7], [800, 190, 2.3, .7], [290, 950, 2.4, .6]].forEach(([x, y, z, i]) => { const p = new THREE.PointLight('#ffcf8a', i * .8, 7, 2); p.position.set(x / 100, z, y / 100); scene.add(p); warm.push(p); });
 const cool = []; [[800, 1000], [820, 580], [1100, 450], [1250, 760], [1470, 600]].forEach(([x, y]) => { const p = new THREE.PointLight('#f3f8ff', .55, 6, 2); p.position.set(x / 100, 2.6, y / 100); scene.add(p); cool.push(p); });
@@ -436,14 +440,14 @@ slats(976, 200, 976, 427, .1, 2.6, 'y', 6, 3.5, 3);
 
 // ------------------------------------------------------------------ vues
 const VIEWS = {
-  axo:      { label: 'Vue d’ensemble', type: 'ortho', target: [7.4, .6, 5.6], dir: [-.55, .78, -.62], size: 7.6, cut: 1.7, ceil: false, hideTop: true },
-  plan:     { label: 'Plan rendu', type: 'ortho', target: [6.55, 0, 5.75], dir: [0, 1, .0001], size: 6.25, cut: 1.6, ceil: false, up: [0, 0, -1] },
-  salle:    { label: 'Salle — entrée', type: 'persp', pos: [.6, 1.62, 1.05], target: [5.2, 1.15, 8.6], fov: 72, cut: 0, ceil: true },
-  detente:  { label: 'Salle — espace détente', type: 'persp', pos: [9.45, 1.55, .55], target: [2.0, 1.15, 7.2], fov: 64, cut: 0, ceil: true },
-  murale:   { label: 'Salle — murale & îlot', type: 'persp', pos: [4.3, 1.6, 2.4], target: [1.6, 1.05, 10.6], fov: 64, cut: 0, ceil: true },
-  labo:     { label: 'Laboratoire — maquette', type: 'ortho', target: [10.9, .6, 6.4], dir: [.5, .82, -.55], size: 6.0, cut: 1.7, ceil: false, hideTop: true },
-  hotline:  { label: 'Cuisson & prépa — maquette', type: 'ortho', target: [8.2, .7, 9.0], dir: [-.4, .84, -.42], size: 2.6, cut: 1.7, ceil: false },
-  cuisson:  { label: 'Laboratoire — cuisson', type: 'persp', pos: [8.82, 1.7, 8.7], target: [7.35, 1.0, 11.4], fov: 72, cut: 0, ceil: true },
+  axo:      { label: 'Vue d’ensemble', type: 'ortho', target: [7.4, .6, 5.6], dir: [-.55, .78, -.62], size: 7.6, cut: 1.7, ceil: false, hideTop: true, desc: "Vue d'ensemble coupée à 1,70 m : salle à l'avant, laboratoire dans les cloisons existantes à l'arrière." },
+  plan:     { label: 'Plan rendu', type: 'ortho', target: [6.55, 0, 5.75], dir: [0, 1, .0001], size: 6.25, cut: 1.6, ceil: false, up: [0, 0, -1], desc: "Plan rendu vu de dessus, façade à gauche, comme dans le dossier." },
+  salle:    { label: 'Salle — entrée', type: 'persp', pos: [.6, 1.62, 1.05], target: [5.2, 1.15, 8.6], fov: 72, cut: 0, ceil: true, desc: "Arrivée dans la salle, à hauteur d'œil : tables, comptoir, arbre et murale au fond." },
+  detente:  { label: 'Salle — espace détente', type: 'persp', pos: [9.45, 1.55, .55], target: [2.0, 1.15, 7.2], fov: 64, cut: 0, ceil: true, desc: "Depuis l'alcôve du fond vers la vitrine : banquette, tables et lumière du jour." },
+  murale:   { label: 'Salle — murale & îlot', type: 'persp', pos: [4.3, 1.6, 2.4], target: [1.6, 1.05, 10.6], fov: 64, cut: 0, ceil: true, desc: "L'îlot « L'Arbre » et la murale libre-service à portes vitrées." },
+  labo:     { label: 'Laboratoire — maquette', type: 'ortho', target: [10.9, .6, 6.4], dir: [.5, .82, -.55], size: 6.0, cut: 1.7, ceil: false, hideTop: true, desc: "Le laboratoire coupé à 1,70 m : réserve, chambre froide, vestiaires, plonge, prépa et cuisson." },
+  hotline:  { label: 'Cuisson & prépa — maquette', type: 'ortho', target: [8.2, .7, 9.0], dir: [-.4, .84, -.42], size: 2.6, cut: 1.7, ceil: false, desc: "Gros plan sur la prépa froide, les armoires positives et la cuisson." },
+  cuisson:  { label: 'Laboratoire — cuisson', type: 'persp', pos: [8.82, 1.7, 8.7], target: [7.35, 1.0, 11.4], fov: 72, cut: 0, ceil: true, desc: "La ligne de cuisson (four mixte + friteuse sous hotte) vue depuis l'ex-zone pousse." },
 };
 let camera, controls; const aspect = () => STILL ? W0 / H0 : innerWidth / innerHeight;
 function applyCut(h) { G.cut.forEach(({ m, z0, z1 }) => { if (!h || z1 <= h) { m.scale.y = 1; m.position.y = (z0 + z1) / 2; m.visible = true; return; } if (z0 >= h) { m.visible = false; return; } m.visible = true; const nh = h - z0; m.scale.y = nh / (z1 - z0); m.position.y = z0 + nh / 2; }); }
@@ -460,15 +464,25 @@ function setView(k) {
   if (!STILL) {
     if (controls) controls.dispose(); controls = new THREE.OrbitControls(camera, canvas);
     controls.target.set(...(v.target)); controls.enableDamping = true; controls.update();
-    document.querySelectorAll('#views button').forEach(b => b.classList.toggle('on', b.dataset.k === k));
+    document.querySelectorAll('#views button').forEach(b => { b.classList.toggle('on', b.dataset.k === k); b.setAttribute('aria-pressed', b.dataset.k === k); });
+    document.getElementById('cap').textContent = v.desc;
   }
 }
+let current = VIEW0;
 if (!STILL) {
   const box2 = document.getElementById('views');
-  Object.entries(VIEWS).forEach(([k, v]) => { const b = document.createElement('button'); b.textContent = v.label; b.dataset.k = k; b.onclick = () => setView(k); box2.appendChild(b); });
-  addEventListener('resize', () => { renderer.setSize(innerWidth, innerHeight); location.hash = ''; setView(document.querySelector('#views .on').dataset.k); });
+  Object.entries(VIEWS).forEach(([k, v]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = v.label; b.dataset.k = k; b.onclick = () => { if (location.hash !== '#' + k) location.hash = k; else setView(k); }; box2.appendChild(b); });
+  const fromHash = () => { const h = location.hash.slice(1); return VIEWS[h] ? h : 'axo'; };
+  current = fromHash();
+  addEventListener('hashchange', () => { current = fromHash(); setView(current); });
+  addEventListener('resize', () => {
+    renderer.setSize(innerWidth, innerHeight);
+    const a = aspect();
+    if (camera.isPerspectiveCamera) camera.aspect = a; else { const s2 = camera.top; camera.left = -s2 * a; camera.right = s2 * a; }
+    camera.updateProjectionMatrix();
+  });
 }
-setView(VIEW0);
+setView(current);
 function loop() { if (controls) controls.update(); renderer.render(scene, camera); requestAnimationFrame(loop); }
 if (STILL) { setTimeout(() => { renderer.render(scene, camera); setTimeout(() => { renderer.render(scene, camera); window.__done = true; }, 400); }, 600); }
 else loop();
